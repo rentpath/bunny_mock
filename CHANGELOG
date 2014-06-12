@@ -1,0 +1,8 @@
+*0.0.2* (June 12, 2014)
+
+* Reworked Scott Bradley's code to use newer RSpec version.
+* Added a .gemspec file
+* Added my midwire_common gem to automate version:bump tasks
+* Added a LICENSE.txt file
+* Added this CHANGELOG file
+* Added a NOTES.md file
