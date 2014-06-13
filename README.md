@@ -4,9 +4,11 @@
 
 This is a brain-dead-simple mock for the `Bunny` class provided by the [bunny gem](https://github.com/ruby-amqp/bunny), which is a synchronous Ruby RabbitMQ client. If you want to mock out RabbitMQ in your tests and are currently using Bunny, this might be the tool for you.
 
-BunnyMock does not mock all of the methods of Bunny. It currently only mocks the behavior I needed for my immediate needs, which is mainly creating and binding queues and exchanges, and publishing/subscribing messages.
+BunnyMock does not mock all of the methods of Bunny. It currently only mocks the behavior we have required for our immediate needs, which is mainly creating and binding queues and exchanges, and publishing/subscribing messages.
 
-Feel free to fork it to add more behavior mocking and send me a pull request.
+Feel free to fork it to add more behavior mocking and send me a pull request, just "Don't Mock the Bunny":
+
+![Don't Mock the Bunny!](http://dailybunny.org/wp-content/uploads/2012/09/tumblr_m95vmvdoS31qzp2x4o1_1280-1024x680.jpg "Don't Mock the Bunny!")
 
 ## Installation
 
@@ -30,9 +32,11 @@ Since this is intended as a simple way to help test your collaboration with Bunn
 
 See the first "integration" test case in `spec/lib/bunny_mock_spec.rb` for a quick example of how to use BunnyMock.
 
-# Author
+# Authors
 
-Scott W. Bradley - http://scottwb.com
+* Scott W. Bradley - http://scottwb.com
+* Chris Blackburn - https://github.com/midwire
+* Craig Demyanovich - https://github.com/cdemyanovich
 
 ## Contributing
 

@@ -25,7 +25,7 @@ module Bundler
     def rubygem_push(path)
       puts(">>> #{path}")
       sh("gem inabox '#{path}'")
-      Bundler.ui.confirm "Pushed #{name} #{version} to gems.c2c.americadirect.net"
+      Bundler.ui.confirm "Pushed #{name} #{version} to http://gems.idg.primedia.com/"
     end
   end
 end
