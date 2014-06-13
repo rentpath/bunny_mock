@@ -32,11 +32,11 @@ Since this is intended as a simple way to help test your collaboration with Bunn
 
 See the first "integration" test case in `spec/lib/bunny_mock_spec.rb` for a quick example of how to use BunnyMock.
 
-# Author
+# Authors
 
-Scott W. Bradley - http://scottwb.com
-Chris Blackburn - https://github.com/midwire
-Craig Demyanovich - https://github.com/cdemyanovich
+* Scott W. Bradley - http://scottwb.com
+* Chris Blackburn - https://github.com/midwire
+* Craig Demyanovich - https://github.com/cdemyanovich
 
 ## Contributing
 
