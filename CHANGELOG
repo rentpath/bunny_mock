@@ -1,3 +1,7 @@
+*0.0.3* (June 17, 2014)
+
+* Added the 'close' method on Bunny.
+
 *0.0.2* (June 12, 2014)
 
 * Reworked Scott Bradley's code to use newer RSpec version.
