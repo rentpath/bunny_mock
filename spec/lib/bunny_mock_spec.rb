@@ -81,6 +81,12 @@ describe BunnyMock do
     end
   end
 
+  describe "#close" do
+    it "returns nil" do
+      expect(bunny.close).to eq(nil)
+    end
+  end
+
   describe "#create_channel" do
     it "returns a new channel" do
       expect(bunny.create_channel).to be_a(BunnyMock::Channel)

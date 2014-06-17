@@ -15,6 +15,10 @@ module BunnyMock
       nil
     end
 
+    def close
+      nil
+    end
+
     def create_channel
       BunnyMock::Channel.new
     end
