@@ -61,8 +61,13 @@ describe "BunnyMock Integration Tests", :integration => true do
 end
 
 describe BunnyMock do
-  let(:bunny) { BunnyMock::Bunny.new }
+  let(:bunny) { BunnyMock::Bunny.new(queue_exists?:true) }
 
+  describe "#method_missing" do
+    it "returns true for queue_exists?" do
+      expect(bunny.queue_exists?('foo')).to eq(true)
+    end
+  end
   describe "#start" do
     it "connects" do
       expect(bunny.start).to eq(:connected)
