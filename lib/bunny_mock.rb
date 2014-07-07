@@ -17,6 +17,10 @@ module BunnyMock
       end
     end
 
+    def respond_to?(method, include_private = false)
+      attrs.has_key? method || super
+    end
+
     def start
       :connected
     end

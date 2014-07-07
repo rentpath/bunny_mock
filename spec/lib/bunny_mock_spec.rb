@@ -68,6 +68,21 @@ describe BunnyMock do
       expect(bunny.queue_exists?('foo')).to eq(true)
     end
   end
+
+  describe "#respond_to?" do
+    it "returns true for queue_exists?" do
+      expect(bunny.respond_to?(:queue_exists?)).to eq(true)
+    end
+
+    it "returns true for start?" do
+      expect(bunny.respond_to?(:queue_exists?)).to eq(true)
+    end
+
+    it "returns false for bogus_method" do
+      expect(bunny.respond_to?(:bogus_method)).to eq(false)
+    end
+  end
+
   describe "#start" do
     it "connects" do
       expect(bunny.start).to eq(:connected)
