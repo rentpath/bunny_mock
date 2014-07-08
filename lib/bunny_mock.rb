@@ -41,6 +41,10 @@ module BunnyMock
       BunnyMock::Exchange.new(name)
     end
 
+    def fanout(name)
+      BunnyMock::Exchange.new(name)
+    end
+
     def queue(name, *args)
       BunnyMock::Queue.new(*args)
     end
