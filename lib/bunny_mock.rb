@@ -45,6 +45,10 @@ module BunnyMock
       BunnyMock::Exchange.new(name)
     end
 
+    def topic(name, attrs = {})
+      BunnyMock::Exchange.new(name, attrs)
+    end
+
     def queue(name, *args)
       BunnyMock::Queue.new(*args)
     end
