@@ -3,6 +3,24 @@ require "bunny_mock/version"
 module BunnyMock
 
   class Bunny
+    attr_accessor :attrs
+
+    def initialize(attrs = {})
+      self.attrs = attrs.dup
+    end
+
+    def method_missing(method, *args)
+      if attrs.has_key? method
+        attrs[method]
+      else
+        super
+      end
+    end
+
+    def respond_to?(method, include_private = false)
+      attrs.has_key? method || super
+    end
+
     def start
       :connected
     end
