@@ -1,7 +1,5 @@
 # BunnyMock
 
-**Version: 0.0.4**
-
 This is a brain-dead-simple mock for the `Bunny` class provided by the [bunny gem](https://github.com/ruby-amqp/bunny), which is a synchronous Ruby RabbitMQ client. If you want to mock out RabbitMQ in your tests and are currently using Bunny, this might be the tool for you.
 
 BunnyMock does not mock all of the methods of Bunny. It currently only mocks the behavior we have required for our immediate needs, which is mainly creating and binding queues and exchanges, and publishing/subscribing messages.
