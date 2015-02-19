@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["http://scottwb.com", "chris@midwiretech.com", "cdemyanovich@gmail.com"]
   spec.summary       = %q{Simple Bunny/RabbitMQ mock class in Ruby. Useful for mocking Bunny usage in test code.}
   spec.description   = spec.summary
-  spec.homepage      = "https://github.com/scottwb/bunny-mock"
+  spec.homepage      = "https://github.com/rentpath/bunny-mock"
   spec.license       = "Apache 2.0"
 
   spec.files         = `git ls-files -z`.split("\x0")
