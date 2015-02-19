@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'pry'
 
 describe "BunnyMock Integration Tests", :integration => true do
   let(:bunny) {  BunnyMock::Bunny.new }
