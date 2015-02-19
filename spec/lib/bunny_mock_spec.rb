@@ -1,9 +1,11 @@
 require 'spec_helper'
+require 'pry'
 
 describe "BunnyMock Integration Tests", :integration => true do
+  let(:bunny) {  BunnyMock::Bunny.new }
+
   it "should handle the basics of message passing" do
     # Basic one-to-one queue/exchange setup.
-    bunny = BunnyMock::Bunny.new
     queue = bunny.queue(
       "integration_queue",
       :durable     => true,
@@ -93,6 +95,27 @@ describe BunnyMock do
     end
   end
 
+  describe "#channel" do
+    let(:channel) { bunny.create_channel }
+
+    describe "#fanout" do
+      let(:fanout) { channel.fanout('fanout_test') }
+
+      it "returns an exchange" do
+        expect(fanout).to be_a(BunnyMock::Exchange)
+      end
+
+      it "returns a fanout type" do
+        expect(fanout.type).to eq(:fanout)
+      end
+
+      it "adds fanout exchange to the channel's exchange cache" do
+        expect(fanout).to eq(channel.exchanges['fanout_test'])
+      end
+    end
+
+  end
+
   describe "#queue" do
     let(:queue_name) { 'my_queue' }
     let(:queue) { bunny.queue(queue_name, :durable => true) }
@@ -113,7 +136,7 @@ describe BunnyMock do
   describe "#exchange" do
     let(:exchange_name) { 'my_exch' }
     let(:exchange_type) { :direct }
-    let(:exchange) { bunny.exchange(exchange_name, :type => exchange_type) }
+    let(:exchange) { bunny.exchange(exchange_name, exchange_type) }
 
     it "is a BunnyMock::Exchange" do
       expect(exchange).to be_a(BunnyMock::Exchange)
@@ -141,6 +164,8 @@ describe BunnyMock::Consumer do
 end
 
 describe BunnyMock::Queue do
+  let(:bunny) { BunnyMock::Bunny.new }
+  let(:channel) { bunny.create_channel }
   let(:queue_name) { "my_test_queue" }
   let(:queue_attrs) {
     {
@@ -150,7 +175,13 @@ describe BunnyMock::Queue do
       :arguments   => {"x-ha-policy" => "all"}
     }
   }
-  let(:queue) { BunnyMock::Queue.new(queue_name, queue_attrs) }
+  let(:queue) { BunnyMock::Queue.new(channel, queue_name, queue_attrs) }
+
+  describe "#channel" do
+    it "returns the channel passed to the constructor" do
+      expect(queue.channel).to eq(channel)
+    end
+  end
 
   describe "#name" do
     it "is consistent" do
@@ -238,8 +269,10 @@ describe BunnyMock::Queue do
   end
 
   describe "#bind" do
+    let(:bunny) { BunnyMock::Bunny.new }
+    let(:channel) { bunny.create_channel }
     let(:exchange_name) { 'my_test_exchange' }
-    let(:exchange) { BunnyMock::Exchange.new(exchange_name,) }
+    let(:exchange) { BunnyMock::Exchange.new(channel, :direct, exchange_name) }
     before(:each) { queue.bind(exchange) }
 
     it "is bound" do
@@ -287,15 +320,16 @@ describe BunnyMock::Queue do
 end
 
 describe BunnyMock::Exchange do
+  let(:bunny) { BunnyMock::Bunny.new }
+  let(:channel) { bunny.create_channel }
   let(:exchange_name) { "my_test_exchange" }
   let(:exchange_attrs) {
     {
-      :type        => :direct,
       :durable     => true,
       :auto_delete => true
     }
   }
-  let(:exchange) { BunnyMock::Exchange.new(exchange_name, exchange_attrs) }
+  let(:exchange) { BunnyMock::Exchange.new(channel, :direct, exchange_name, exchange_attrs) }
 
   describe "#name" do
     it "returns the name" do
@@ -321,7 +355,7 @@ describe BunnyMock::Exchange do
     end
 
     context "when the exchange is bound to a queue" do
-      let(:queue) { BunnyMock::Queue.new("a_queue") }
+      let(:queue) { BunnyMock::Queue.new(channel, "a_queue") }
       before(:each) { queue.bind(exchange) }
 
       it "has one queue" do
@@ -336,7 +370,7 @@ describe BunnyMock::Exchange do
 
   describe "#bound_to?" do
     let(:queue_name) { 'a_queue' }
-    let(:queue) { BunnyMock::Queue.new(queue_name) }
+    let(:queue) { BunnyMock::Queue.new(channel, queue_name) }
     before(:each) { queue.bind(exchange) }
 
     it "is bound to a queue" do
@@ -350,8 +384,8 @@ describe BunnyMock::Exchange do
 
   describe "#publish" do
     let(:the_message) { 'the message' }
-    let(:queue1) { BunnyMock::Queue.new("queue1") }
-    let(:queue2) { BunnyMock::Queue.new("queue2") }
+    let(:queue1) { BunnyMock::Queue.new(channel, "queue1") }
+    let(:queue2) { BunnyMock::Queue.new(channel, "queue2") }
     before(:each) do
       queue1.bind(exchange)
       queue2.bind(exchange)
