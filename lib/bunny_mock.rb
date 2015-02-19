@@ -19,6 +19,7 @@ module BunnyMock
       nil
     end
 
+    # In the real Bunny gem, this method lives in Bunny::Session
     def create_channel
       BunnyMock::Channel.new
     end
@@ -31,26 +32,64 @@ module BunnyMock
       BunnyMock::Queue.new(*attrs)
     end
 
-    def exchange(*attrs)
-      BunnyMock::Exchange.new(*attrs)
+    def exchange(name, type, *attrs)
+      BunnyMock::Exchange.new(create_channel, type, name, attrs)
     end
+
+    def queue(name, *attrs)
+      BunnyMock::Queue.new(create_channel, name, *attrs)
+    end
+
   end # class Bunny
 
   class Channel
+    attr_accessor :exchanges, :queues
+
+    def initialize(*args)
+      @exchanges = {}
+      @queues = {}
+    end
+
+    # Declares a direct exchange or looks it up in the cache of previously
+    # declared exchanges.
     def direct(name)
-      BunnyMock::Exchange.new(name)
+      direct = exchanges[name]
+      return direct if direct
+      direct = BunnyMock::Exchange.new(self, :direct, name)
+      add_exchange(name, direct)
     end
 
+    # Declares a fanout exchange or looks it up in the cache of previously
+    # declared exchanges.
     def fanout(name)
-      BunnyMock::Exchange.new(name)
+      fanout = exchanges[name]
+      return fanout if fanout
+      add_exchange(name, BunnyMock::Exchange.new(self, :fanout, name))
     end
 
+    # Declares a topic exchange or looks it up in the cache of previously
+    # declared exchanges.
     def topic(name, attrs = {})
-      BunnyMock::Exchange.new(name, attrs)
+      topic = exchanges[name]
+      return topic if topic
+      add_exchange(name, BunnyMock::Exchange.new(self, :topic, name, attrs))
     end
 
+    # Declares a queue or looks it up in the per-channel cache.
     def queue(name, *args)
-      BunnyMock::Queue.new(*args)
+      queue = queues[name]
+      return queue if queue
+      add_queue(name, BunnyMock::Queue.new(self, name, *args))
+    end
+
+    private
+
+    def add_exchange(name, exchange)
+      @exchanges[name] = exchange
+    end
+
+    def add_queue(name, queue)
+      @queues[name] = queue
     end
   end
 
@@ -62,8 +101,10 @@ module BunnyMock
   end
 
   class Queue
-    attr_accessor :name, :attrs, :messages, :delivery_count
-    def initialize(name, attrs = {})
+    attr_accessor :channel, :name, :attrs, :messages, :delivery_count
+
+    def initialize(channel, name, attrs = {})
+      self.channel        = channel
       self.name           = name
       self.attrs          = attrs.dup
       self.messages       = []
@@ -116,8 +157,10 @@ module BunnyMock
   end # class Queue
 
   class Exchange
-    attr_accessor :name, :attrs, :queues
-    def initialize(name, attrs = {})
+    attr_accessor :channel, :type, :name, :attrs, :queues
+    def initialize(channel, type, name, attrs = {})
+      self.channel = channel
+      self.type = type
       self.name   = name
       self.attrs  = attrs.dup
       self.queues = []
