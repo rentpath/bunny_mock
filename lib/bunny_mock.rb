@@ -76,7 +76,6 @@ module BunnyMock
     end
 
     # Declares a queue or looks it up in the per-channel cache.
-
     def queue(name, *args)
       queue = queues[name]
       return queue if queue
