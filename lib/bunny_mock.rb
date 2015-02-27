@@ -1,8 +1,14 @@
 require "bunny_mock/version"
 
 module BunnyMock
+  extend self
+
+  def new(*args)
+    Bunny.new
+  end
 
   class Bunny
+
     def start
       :connected
     end
@@ -61,10 +67,10 @@ module BunnyMock
 
     # Declares a fanout exchange or looks it up in the cache of previously
     # declared exchanges.
-    def fanout(name)
+    def fanout(name, attrs = {})
       fanout = exchanges[name]
       return fanout if fanout
-      add_exchange(name, BunnyMock::Exchange.new(self, :fanout, name))
+      add_exchange(name, BunnyMock::Exchange.new(self, :fanout, name, attrs))
     end
 
     # Declares a topic exchange or looks it up in the cache of previously
