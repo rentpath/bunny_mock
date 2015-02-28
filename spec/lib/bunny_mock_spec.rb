@@ -64,6 +64,13 @@ end
 describe BunnyMock do
   let(:bunny) { BunnyMock::Bunny.new }
 
+  describe "#new" do
+    it "returns a new BunnyMock::Bunny instance" do
+      instance = BunnyMock.new('amqp://login:pass@server.com/vhost')
+      expect(instance.class).to eq(BunnyMock::Bunny)
+    end
+  end
+
   describe "#start" do
     it "connects" do
       expect(bunny.start).to eq(:connected)
@@ -98,7 +105,7 @@ describe BunnyMock do
     let(:channel) { bunny.create_channel }
 
     describe "#fanout" do
-      let(:fanout) { channel.fanout('fanout_test') }
+      let(:fanout) { channel.fanout('fanout_test', key_1: :value_1) }
 
       it "returns an exchange" do
         expect(fanout).to be_a(BunnyMock::Exchange)
@@ -110,6 +117,10 @@ describe BunnyMock do
 
       it "adds fanout exchange to the channel's exchange cache" do
         expect(fanout).to eq(channel.exchanges['fanout_test'])
+      end
+
+      it "passes along the optional options to the exchange" do
+        expect(fanout.options).to eq({key_1: :value_1})
       end
     end
 
@@ -188,9 +199,9 @@ describe BunnyMock::Queue do
     end
   end
 
-  describe "#attrs" do
+  describe "#options" do
     it "are consistent" do
-      expect(queue.attrs).to eq(queue_attrs)
+      expect(queue.options).to eq(queue_attrs)
     end
   end
 
@@ -338,7 +349,7 @@ describe BunnyMock::Exchange do
 
   describe "#attrs" do
     it "returns the attributes" do
-      expect(exchange.attrs).to eq(exchange_attrs)
+      expect(exchange.options).to eq(exchange_attrs)
     end
   end
 
